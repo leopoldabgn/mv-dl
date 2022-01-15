@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -15,19 +14,20 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import com.mvdl.model.Command;
+import com.mvdl.model.Preferences;
 import com.mvdl.model.Video;
 
 public class VideoPanel extends JPanel {
 
-    private SearchPanel searchPan;
+    private Command command;
 
     private Video video;
-    private Image image;
+    // private Image image; // TODO: Recuperer l'image de la video
     private DescriptionPanel desc;
     private DownloadPanel downloadPan;
 
-    public VideoPanel(SearchPanel searchPan, Video video) {
-        this.searchPan = searchPan;
+    public VideoPanel(Preferences prefs, Video video) {
+        this.command = new Command(prefs);
         this.video = video;
         this.desc = new DescriptionPanel();
         this.downloadPan = new DownloadPanel();
@@ -94,7 +94,7 @@ public class VideoPanel extends JPanel {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                Command.downloadMusic(video);
+                                command.downloadMusic(video);
                                 download.setEnabled(true);
                             }
                         }).start();

@@ -1,11 +1,18 @@
 package com.mvdl.model;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Command {
+
+     private Preferences pref;
+
+    public Command(Preferences pref) {
+        this.pref = pref;
+    }
 
     public static String getHtmlFromSearch(String search) {
         String s;
@@ -85,13 +92,19 @@ public class Command {
         return str;
     }
 
-    public static void downloadMusic(Video video) {
+    public void downloadMusic(Video video) {
+        downloadMusic(pref.getDownloadFolder(), video);
+    }
+
+    public static void downloadMusic(File folder, Video video) {
+        if(folder == null || !folder.isDirectory())
+            return;
         ProcessBuilder pB = new ProcessBuilder(
             "yt-dlp", // works with "youtube-dl"
             "--extract-audio",
             "--audio-format", "mp3",
             "--audio-quality", "0",
-            "--output", "./music/%(title)s.mp3",
+            "--output", folder.getAbsolutePath()+"/%(title)s.mp3",
             "https://www.youtube.com/watch?v="+video.getId()
         );
         

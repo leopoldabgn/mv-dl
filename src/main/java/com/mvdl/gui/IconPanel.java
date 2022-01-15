@@ -14,8 +14,6 @@ public class IconPanel extends JPanel {
 	
 	private BufferedImage icon, defaultIcon, grayIcon;
 	private boolean center = true;
-	
-	private int size;
 
 	public IconPanel(String path, int size, boolean center) {
 		this(path, size);
@@ -23,7 +21,6 @@ public class IconPanel extends JPanel {
 	}
 	
 	public IconPanel(String path, int size) {
-		this.size = size;
 		this.setPreferredSize(new Dimension(size, size));
 		setOpaque(false);
 		String name = path;

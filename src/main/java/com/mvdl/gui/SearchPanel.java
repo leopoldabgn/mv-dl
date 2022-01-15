@@ -20,15 +20,19 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileSystemView;
 
 import com.mvdl.model.Command;
+import com.mvdl.model.Preferences;
 import com.mvdl.model.Video;
 
 public class SearchPanel extends JPanel {
+
+    private Preferences prefs;
 
     private SearchBar searchBar;
     private SourceFolderPanel folderPan;
     private ListPanel listPan;
 
-    public SearchPanel() {
+    public SearchPanel(Preferences prefs) {
+        this.prefs = prefs;
         this.searchBar = new SearchBar();
         this.folderPan = new SourceFolderPanel();
         this.listPan = new ListPanel();
@@ -106,7 +110,7 @@ public class SearchPanel extends JPanel {
             
             videoPnls = new ArrayList<>();
             for(Video video : videos) {
-                videoPnls.add(new VideoPanel(SearchPanel.this, video));
+                videoPnls.add(new VideoPanel(prefs, video));
                 this.add(videoPnls.get(videoPnls.size()-1));
             }
             revalidate();
@@ -117,13 +121,11 @@ public class SearchPanel extends JPanel {
 
     private class SourceFolderPanel extends JPanel {
 
-        private File sourceFolder;
         private JLabel actualFolder;
         private IconPanel chooseFolder;
 
         private SourceFolderPanel() {
-            sourceFolder = new File("./music");
-            this.actualFolder = new JLabel(sourceFolder.getAbsolutePath());
+            this.actualFolder = new JLabel(prefs.getDownloadFolder().getAbsolutePath());
             actualFolder.setForeground(new Color(200, 210, 220));
             this.chooseFolder = new IconPanel("folder", 32);
             chooseFolder.addMouseListener(new MouseAdapter() {
@@ -158,8 +160,8 @@ public class SearchPanel extends JPanel {
             File f = new File(path);
             if(!f.exists())
                 return;
-            sourceFolder = f;
-            actualFolder.setText(sourceFolder.getAbsolutePath());
+            prefs.setDownloadFolder(f);
+            actualFolder.setText(prefs.getDownloadFolder().getAbsolutePath());
         }
 
     }
