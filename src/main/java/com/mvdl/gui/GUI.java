@@ -11,7 +11,8 @@ public class GUI extends JFrame {
     
 	private Preferences prefs;
 
-    public GUI(int w, int h) {
+    public GUI(Preferences prefs, int w, int h) {
+		this.prefs = prefs;
 		this.setTitle("MV downloader");
 		this.setMinimumSize(new Dimension(w, h));
 		
@@ -20,10 +21,6 @@ public class GUI extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		setDefaultLookAndFeelDecorated(true);
-
-		// On recupere le fichier de prefs si il existe.
-		// Sinon, on en cree un nouveau
-		this.prefs = new Preferences(new File("music"));
 
 		setSearchPanel();
 		
