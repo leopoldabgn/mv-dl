@@ -8,6 +8,8 @@ import java.util.List;
 
 public class Command {
 
+    public static int downloadsInProgress;
+
      private Preferences pref;
 
     public Command(Preferences pref) {
@@ -114,6 +116,19 @@ public class Command {
             p.waitFor();
             p.destroy();
         } catch (Exception e1) {}
+    }
+
+    public static boolean checkPrgm(String prgm) {
+        Process p;
+        int exit = 1;
+        try {
+            p = Runtime.getRuntime().exec(prgm+" --version");
+            p.waitFor();
+            exit = p.exitValue();
+            p.destroy();
+        } catch (Exception e1) {}
+
+        return exit == 0;
     }
 
 }

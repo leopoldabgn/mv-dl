@@ -94,8 +94,10 @@ public class VideoPanel extends JPanel {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
+                                Command.downloadsInProgress++;
                                 command.downloadMusic(video);
                                 download.setEnabled(true);
+                                Command.downloadsInProgress--;
                             }
                         }).start();
                     }
