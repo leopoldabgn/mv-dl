@@ -2,9 +2,19 @@ package com.mvdl.model;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class Command {
 
@@ -16,9 +26,25 @@ public class Command {
         this.pref = pref;
     }
 
+    public static String exec(String cmd) {
+        String s, result = "";
+        Process p;
+        try {
+            p = Runtime.getRuntime().exec(cmd);
+            BufferedReader br = new BufferedReader(
+                new InputStreamReader(p.getInputStream()));
+            while ((s = br.readLine()) != null)
+                result += s+"\n";
+            p.waitFor();
+            //System.out.println ("exit: " + p.exitValue());
+            p.destroy();
+        } catch (Exception e1) {}
+        return result;
+    }
+
+    // TODO: Recreer la fonction avec l'aide de exec.
     public static String getHtmlFromSearch(String search) {
-        String s;
-        String html = "";
+        String s, html = "";
         Process p;
         search = search.replace(" ", "%20");
         try {
@@ -131,4 +157,60 @@ public class Command {
         return exit == 0;
     }
 
+    public static String readFile(String path) throws IOException {
+        InputStream is = new FileInputStream(path);
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader buffer = new BufferedReader(isr);
+            
+        String line = buffer.readLine();
+        StringBuilder builder = new StringBuilder();
+            
+        while(line != null){
+           builder.append(line).append("\n");
+           line = buffer.readLine();
+        }
+            
+        return builder.toString();
+    }
+
+    public static void testJSON() {
+        String json = "";
+
+        try {
+            json = readFile("res/result3.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        readJSON(json, false);
+    }
+
+    public static void readJSON(String json, boolean b) {
+        System.out.println(json);
+    }
+
+    public static void readJSON(String path) {
+        JSONParser jsonParser = new JSONParser();
+         
+        try (FileReader reader = new FileReader(path))
+        {
+            //Read JSON file
+            Object obj = jsonParser.parse(reader);
+ 
+            JSONArray list = (JSONArray) obj;
+            JSONObject t1 = ((JSONObject) list.get(0));
+            System.out.println(t1);
+             
+            //Iterate over employee array
+            //list.forEach( emp -> parseEmployeeObject( (JSONObject) emp ) );
+ 
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+    
 }
