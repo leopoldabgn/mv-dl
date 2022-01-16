@@ -36,7 +36,7 @@ public class GUI extends JFrame {
             {
 				if(Command.downloadsInProgress > 0) {
 					GUI.showErrorWindow(GUI.this, "You cannot close the window"+
-						"because downloads are still in progress.");
+						" because downloads are still in progress.");
 					return;
 				}
                 e.getWindow().dispose();
