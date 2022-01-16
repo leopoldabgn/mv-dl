@@ -1,6 +1,7 @@
 package com.mvdl.launcher;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.mvdl.gui.GUI;
 import com.mvdl.model.Command;
@@ -9,7 +10,11 @@ import com.mvdl.model.Preferences;
 public class Launcher {
 
     public static void main(String[] args) {
-        Command.readJSON("res/result3.json");
+        try {
+            Command.getVideosByJSON(Command.readFile("res/result3.json"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         
         boolean ok = true;
         if(!Command.checkPrgm("curl")) {

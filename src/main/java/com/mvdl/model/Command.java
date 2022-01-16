@@ -173,13 +173,13 @@ public class Command {
         return builder.toString();
     }
 
-    public static List<Video> readJSON(String path) {
+    public static List<Video> getVideosByJSON(String json) {
         JSONParser jsonParser = new JSONParser();
         List<Video> videos = new ArrayList<Video>();
-        try (FileReader reader = new FileReader(path))
+        try
         {
             //Read JSON file
-            Object obj = jsonParser.parse(reader);
+            Object obj = jsonParser.parse(json);
  
             JSONObject tmp = ((JSONObject) obj);
             String[] tab = {"contents", "twoColumnSearchResultsRenderer",
@@ -213,10 +213,6 @@ public class Command {
                 }
             }
             
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
         }
