@@ -197,13 +197,33 @@ public class Command {
             //Read JSON file
             Object obj = jsonParser.parse(reader);
  
-            JSONArray list = (JSONArray) obj;
-            JSONObject t1 = ((JSONObject) list.get(0));
-            System.out.println(t1);
-             
+            JSONObject t1 = ((JSONObject) obj);
+            String[] tab1 = {"contents", "twoColumnSearchResultsRenderer",
+            "primaryContents", "sectionListRenderer"};
+            /*: [
+                    {
+                      "itemSectionRenderer": {
+                        "contents": [
+                          {
+                            "videoRenderer"};*/
+            JSONObject tmp = t1;
+            for(String s : tab1) {
+                tmp = (JSONObject)tmp.get(s);
+            }
+            
+            JSONArray arr = (JSONArray)tmp.get("contents");
+            tmp = (JSONObject)arr.get(0);
+            tmp = (JSONObject)tmp.get("itemSectionRenderer");
+            arr = (JSONArray)tmp.get("contents");
+            tmp = (JSONObject)arr.get(0);
+            tmp = (JSONObject)tmp.get("videoRenderer");
+
+            System.out.println(extractId(tmp));
+            System.out.println(extractThumbnailURL(tmp));
+            
             //Iterate over employee array
             //list.forEach( emp -> parseEmployeeObject( (JSONObject) emp ) );
- 
+            
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -213,4 +233,16 @@ public class Command {
         }
     }
     
+    public static String extractId(JSONObject obj) {
+        return (String)obj.get("videoId");
+    }
+
+    public static String extractThumbnailURL(JSONObject obj) {
+        obj = (JSONObject)obj.get("thumbnail");
+        JSONArray arr = (JSONArray)obj.get("thumbnails");
+        obj = (JSONObject)arr.get(0);
+
+        return (String)obj.get("url");
+    }
+
 }

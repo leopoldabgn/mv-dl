@@ -4,6 +4,7 @@ public class Video {
     
     private String id, title,
             duration, date, views;
+    private String thumbnailURL;
 
     public Video() {}
 
@@ -51,6 +52,14 @@ public class Video {
 
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+
+    public void setThumbnailURL(String URL) {
+        this.thumbnailURL = URL;
+    }
+
+    public String getThumbnailURL() {
+        return thumbnailURL;
     }
 
 }
