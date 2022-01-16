@@ -8,6 +8,10 @@ public class Video {
 
     public Video() {}
 
+    public boolean isValid() {
+        return !(id.isBlank() || title.isBlank() || duration.isBlank());
+    }
+
     @Override
     public String toString() {
         return id+", "+title+", "+duration+

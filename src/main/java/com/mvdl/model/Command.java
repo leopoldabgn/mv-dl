@@ -173,56 +173,45 @@ public class Command {
         return builder.toString();
     }
 
-    public static void testJSON() {
-        String json = "";
-
-        try {
-            json = readFile("res/result3.json");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        readJSON(json, false);
-    }
-
-    public static void readJSON(String json, boolean b) {
-        System.out.println(json);
-    }
-
-    public static void readJSON(String path) {
+    public static List<Video> readJSON(String path) {
         JSONParser jsonParser = new JSONParser();
-         
+        List<Video> videos = new ArrayList<Video>();
         try (FileReader reader = new FileReader(path))
         {
             //Read JSON file
             Object obj = jsonParser.parse(reader);
  
-            JSONObject t1 = ((JSONObject) obj);
-            String[] tab1 = {"contents", "twoColumnSearchResultsRenderer",
+            JSONObject tmp = ((JSONObject) obj);
+            String[] tab = {"contents", "twoColumnSearchResultsRenderer",
             "primaryContents", "sectionListRenderer"};
-            /*: [
-                    {
-                      "itemSectionRenderer": {
-                        "contents": [
-                          {
-                            "videoRenderer"};*/
-            JSONObject tmp = t1;
-            for(String s : tab1) {
+
+            for(String s : tab)
                 tmp = (JSONObject)tmp.get(s);
-            }
             
             JSONArray arr = (JSONArray)tmp.get("contents");
             tmp = (JSONObject)arr.get(0);
             tmp = (JSONObject)tmp.get("itemSectionRenderer");
             arr = (JSONArray)tmp.get("contents");
-            tmp = (JSONObject)arr.get(0);
-            tmp = (JSONObject)tmp.get("videoRenderer");
-
-            System.out.println(extractId(tmp));
-            System.out.println(extractThumbnailURL(tmp));
-            
-            //Iterate over employee array
-            //list.forEach( emp -> parseEmployeeObject( (JSONObject) emp ) );
+            Video video;
+            for(int i=0;i<arr.size();i++) {
+                try {
+                    tmp = (JSONObject)arr.get(i);
+                    tmp = (JSONObject)tmp.get("videoRenderer");
+                } catch(Exception e) {
+                    continue;
+                }
+                video = new Video();
+                video.setId(extractId(tmp));
+                video.setTitle(extractTitle(tmp));
+                video.setDuration(extractDuration(tmp));
+                video.setThumbnailURL(extractThumbnailURL(tmp));
+                video.setDate(extractDate(tmp));
+                video.setViews(extractViews(tmp));
+                if(video.isValid()) {
+                    System.out.println(video);
+                    videos.add(video);
+                }
+            }
             
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -231,18 +220,82 @@ public class Command {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        return videos;
     }
     
     public static String extractId(JSONObject obj) {
-        return (String)obj.get("videoId");
+        try {
+            return (String)obj.get("videoId");
+        } catch(Exception e){
+            return "";
+        }
     }
 
     public static String extractThumbnailURL(JSONObject obj) {
-        obj = (JSONObject)obj.get("thumbnail");
-        JSONArray arr = (JSONArray)obj.get("thumbnails");
-        obj = (JSONObject)arr.get(0);
+        try {
+            obj = (JSONObject)obj.get("thumbnail");
+            JSONArray arr = (JSONArray)obj.get("thumbnails");
+            obj = (JSONObject)arr.get(0);
 
-        return (String)obj.get("url");
+            return (String)obj.get("url");
+        } catch(Exception e) {
+            return "";
+        }
+    }
+
+    public static String extractTitle(JSONObject obj) {
+        try {
+            obj = (JSONObject)obj.get("title");
+            JSONArray arr = (JSONArray)obj.get("runs");
+            obj = (JSONObject)arr.get(0);
+
+            return (String)obj.get("text");
+        } catch(Exception e) {
+            return "";
+        }
+    }
+
+    public static String extractDate(JSONObject obj) {
+        try {
+            obj = (JSONObject)obj.get("publishedTimeText");
+
+            return (String)obj.get("simpleText");
+        } catch(Exception e) {
+            return "";
+        }
+    }
+
+    public static String extractSimpleDuration(JSONObject obj) {
+        try {
+            obj = (JSONObject)obj.get("lengthText");
+
+            return (String)obj.get("simpleText");
+        } catch(Exception e) {
+            return "";
+        }
+    }
+
+    public static String extractDuration(JSONObject obj) {
+        try {
+            String[] tab = {"lengthText", "accessibility", "accessibilityData"};
+            for(String str : tab)
+                obj = (JSONObject)obj.get(str);
+
+            return (String)obj.get("label");
+        } catch(Exception e) {
+            return "";
+        }
+    }
+
+    public static String extractViews(JSONObject obj) {
+        try {
+            obj = (JSONObject)obj.get("viewCountText");
+
+            return (String)obj.get("simpleText");
+        } catch(Exception e) {
+            return "";
+        }
     }
 
 }
