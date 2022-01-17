@@ -2,13 +2,20 @@ package com.mvdl.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
+import java.io.IOException;
+import java.net.URL;
+
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -22,13 +29,17 @@ public class VideoPanel extends JPanel {
     private Command command;
 
     private Video video;
-    // private Image image; // TODO: Recuperer l'image de la video
+    private BufferedImage thumbnail;
     private DescriptionPanel desc;
     private DownloadPanel downloadPan;
 
     public VideoPanel(Preferences prefs, Video video) {
         this.command = new Command(prefs);
         this.video = video;
+        try {
+            URL url = new URL(video.getThumbnailURL());
+            this.thumbnail = ImageIO.read(url);
+        } catch(IOException e) {this.thumbnail = null;}
         this.desc = new DescriptionPanel();
         this.downloadPan = new DownloadPanel();
 
@@ -36,6 +47,14 @@ public class VideoPanel extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(border, border, 0, border));
         setOpaque(false);
         this.setLayout(new BorderLayout());
+        if(thumbnail != null) {
+            //////// POUR FAIRE DES TESTS
+            // JLabel lblImg = new JLabel(new ImageIcon(thumbnail));
+            // lblImg.setPreferredSize(new Dimension(200, 100));
+            ////////
+            IconPanel icon = new IconPanel(thumbnail, 270, 152);
+            this.add(icon, BorderLayout.WEST);
+        }
         this.add(desc, BorderLayout.CENTER);
         this.add(downloadPan, BorderLayout.EAST);
     }

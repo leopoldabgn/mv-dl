@@ -3,11 +3,10 @@ package com.mvdl.model;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,82 +41,48 @@ public class Command {
         return result;
     }
 
-    // TODO: Recreer la fonction avec l'aide de exec.
-    public static String getHtmlFromSearch(String search) {
-        String s, html = "";
-        Process p;
-        search = search.replace(" ", "%20");
+    public static String cutHTML(String html) {
         try {
-            p = Runtime.getRuntime().exec("curl -s https://www.youtube.com/results?search_query=\""+search+"\"");
-            BufferedReader br = new BufferedReader(
-                new InputStreamReader(p.getInputStream()));
-            while ((s = br.readLine()) != null)
-                html += s+"\n";
-            p.waitFor();
-            //System.out.println ("exit: " + p.exitValue());
-            p.destroy();
-        } catch (Exception e1) {}
-
+            String search = "ytInitialData = ";
+            html = html.substring(html.indexOf(search)+search.length());
+            html = html.substring(0, html.indexOf(";</script>"));
+        } catch(Exception e) {}
         return html;
     }
 
-    public static List<Video> getVideos(String html) {
-        List<Video> videos = new ArrayList<>();
-        String pattern = "watchCardCompactVideoRenderer";
-        int index = html.indexOf(pattern);
-        String videoLine;
-        while (index >= 0) {
-            index = html.indexOf(pattern, index + 1);
-            if(index < 0)
-                continue;
-            videoLine = "";
-            for(int i=index;i < html.length() && i<index+650;i++)
-                videoLine += html.charAt(i);
-            String[] tab = {"\"title\":{\"simpleText\":\"",
-                            "\"subtitle\":{\"simpleText\":\"",
-                            "\"accessibilityData\":{\"label\":\"",
-                            "\"watchEndpoint\":{\"videoId\":\""};
-            String[] fields = {
-                "title",
-                "subtitle",
-                "label",
-                "videoId"
-            };
-            int count = 0;
-            String val;
-            Video video = new Video();
-            for(String s : tab) {
-                val = getString(videoLine, videoLine.indexOf(s)+s.length(), '\"');
-                switch(fields[count]) {
-                    case "title":
-                        video.setTitle(val);
-                        break;
-                    case "subtitle":
-                        String[] tmp = val.split(" • ");
-                        if(tmp != null && tmp.length > 0)
-                            video.setViews(tmp[0]);
-                        if(tmp != null && tmp.length > 1)
-                            video.setDate(tmp[1]);
-                        break;
-                    case "label":
-                        video.setDuration(val);
-                        break;
-                    case "videoId":
-                        video.setId(val);
-                        break;
-                }
-                count++;
-            }
-            videos.add(video);
-        }
-        return videos;
+    public static String getYtbHTMLCode(String search) {
+        search = search.replace(" ", "%20");
+        String url = "https://www.youtube.com/results?search_query=\""+search+"\"";
+        return getHTMLCode(url);
     }
 
-    public static String getString(String text, int begin, char delimiter) {
-        String str = "";
-        for(int i=begin;i<text.length() && text.charAt(i) != delimiter;i++)
-            str += text.charAt(i);
-        return str;
+    public static String getHTMLCode(String url) {
+        String code = "";
+        url = url.replace(" ", "%20");
+        BufferedReader in = null;
+        try {
+            URL site = new URL(url);
+            in = new BufferedReader(new InputStreamReader(site.openStream()));
+
+            String inputLine;
+            while ((inputLine = in.readLine()) != null)
+                code = code + "\n" + (inputLine);
+
+            in.close();
+        }
+        catch (IOException ex) {
+            System.out.println("Erreur dans l'ouverture de l'URL : " + ex);
+        }
+        finally {
+            try {
+                in.close();
+            }
+            catch (IOException ex) {
+                System.out.println("Erreur dans la fermeture du buffer : " + ex);
+            }
+        }
+        
+       return code;
     }
 
     public void downloadMusic(Video video) {
@@ -207,10 +172,8 @@ public class Command {
                 video.setThumbnailURL(extractThumbnailURL(tmp));
                 video.setDate(extractDate(tmp));
                 video.setViews(extractViews(tmp));
-                if(video.isValid()) {
-                    System.out.println(video);
+                if(video.isValid())
                     videos.add(video);
-                }
             }
             
         } catch (ParseException e) {
@@ -292,6 +255,92 @@ public class Command {
         } catch(Exception e) {
             return "";
         }
+    }
+
+    ////////////////////////////////////////////////////////
+    ////                                                ////
+    ////            ANCIENNES METHODES                  ////
+    ////                                                ////
+    ////////////////////////////////////////////////////////
+
+
+    // TODO: Recreer la fonction avec l'aide de exec.
+    public static String getHtmlFromSearch(String search) {
+        String s, html = "";
+        Process p;
+        search = search.replace(" ", "%20");
+        try {
+            p = Runtime.getRuntime().exec("curl -s https://www.youtube.com/results?search_query=\""+search+"\"");
+            BufferedReader br = new BufferedReader(
+                new InputStreamReader(p.getInputStream()));
+            while ((s = br.readLine()) != null)
+                html += s+"\n";
+            p.waitFor();
+            //System.out.println ("exit: " + p.exitValue());
+            p.destroy();
+        } catch (Exception e1) {}
+
+        return html;
+    }
+
+    // Fonction de secours. Au cas où la methode actuelle ne fonction de plus.
+    public static List<Video> getVideos(String html) {
+        List<Video> videos = new ArrayList<>();
+        String pattern = "watchCardCompactVideoRenderer";
+        int index = html.indexOf(pattern);
+        String videoLine;
+        while (index >= 0) {
+            index = html.indexOf(pattern, index + 1);
+            if(index < 0)
+                continue;
+            videoLine = "";
+            for(int i=index;i < html.length() && i<index+650;i++)
+                videoLine += html.charAt(i);
+            String[] tab = {"\"title\":{\"simpleText\":\"",
+                            "\"subtitle\":{\"simpleText\":\"",
+                            "\"accessibilityData\":{\"label\":\"",
+                            "\"watchEndpoint\":{\"videoId\":\""};
+            String[] fields = {
+                "title",
+                "subtitle",
+                "label",
+                "videoId"
+            };
+            int count = 0;
+            String val;
+            Video video = new Video();
+            for(String s : tab) {
+                val = getString(videoLine, videoLine.indexOf(s)+s.length(), '\"');
+                switch(fields[count]) {
+                    case "title":
+                        video.setTitle(val);
+                        break;
+                    case "subtitle":
+                        String[] tmp = val.split(" • ");
+                        if(tmp != null && tmp.length > 0)
+                            video.setViews(tmp[0]);
+                        if(tmp != null && tmp.length > 1)
+                            video.setDate(tmp[1]);
+                        break;
+                    case "label":
+                        video.setDuration(val);
+                        break;
+                    case "videoId":
+                        video.setId(val);
+                        break;
+                }
+                count++;
+            }
+            videos.add(video);
+        }
+        return videos;
+    }
+
+    public static String getString(String text, int begin, char delimiter) {
+        String str = "";
+        for(int i=begin;i<text.length() && text.charAt(i) != delimiter;i++)
+            str += text.charAt(i);
+        return str;
     }
 
 }

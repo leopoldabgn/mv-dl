@@ -3,6 +3,7 @@ package com.mvdl.gui;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 
@@ -19,7 +20,14 @@ public class IconPanel extends JPanel {
 		this(path, size);
 		this.center = center;
 	}
-	
+
+	public IconPanel(BufferedImage icon, int width, int height) {
+		this.setPreferredSize(new Dimension(width, height));
+		setBackground(Color.RED);
+		this.icon = icon;
+		this.defaultIcon = icon;
+	}
+
 	public IconPanel(String path, int size) {
 		this.setPreferredSize(new Dimension(size, size));
 		setOpaque(false);
@@ -63,13 +71,8 @@ public class IconPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		int size = Math.min(getWidth(), getHeight());
 		if(icon != null) {
-			if(center)
-				g.drawImage(icon, (getWidth()-size)/2, 
-						(getHeight()-size)/2, size, size, null);
-			else
-				g.drawImage(icon, 0, 0, getWidth(), size, null);
+			g.drawImage(icon, 0, 0, getWidth(), getHeight(), null);	
 		}
 	}
 }

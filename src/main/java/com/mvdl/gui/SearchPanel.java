@@ -28,13 +28,13 @@ public class SearchPanel extends JPanel {
     private Preferences prefs;
 
     private SearchBar searchBar;
-    private SourceFolderPanel folderPan;
+    private DownloadFolderPanel folderPan;
     private ListPanel listPan;
 
     public SearchPanel(Preferences prefs) {
         this.prefs = prefs;
         this.searchBar = new SearchBar();
-        this.folderPan = new SourceFolderPanel();
+        this.folderPan = new DownloadFolderPanel();
         this.listPan = new ListPanel();
         
         JPanel northPan = new JPanel();
@@ -72,12 +72,15 @@ public class SearchPanel extends JPanel {
     
         public SearchBar() {
             this.searchField = new JTextField();
-            searchField.setToolTipText("Type your artist...");
+            searchField.setToolTipText("Search...");
             this.searchButton = new JButton("Search");
     
             searchButton.addActionListener(e -> {
-                String HTMLresult = Command.getHtmlFromSearch(searchField.getText());
-                List<Video> videos = Command.getVideos(HTMLresult);
+                ///////// OLD METHOD //////////
+                // String HTMLresult = Command.getHtmlFromSearch(searchField.getText());
+                // List<Video> videos = Command.getVideos(HTMLresult);
+                ///////////////////////////////
+                List<Video> videos = Command.getVideosByJSON(Command.cutHTML(Command.getYtbHTMLCode(searchField.getText())));
                 listPan.refresh(videos);
             });
     
@@ -104,11 +107,15 @@ public class SearchPanel extends JPanel {
         }
 
         public void refresh(List<Video> videos) {
-            if(videos == null || videos.isEmpty())
-                return;
-            this.removeAll();
-            
+            this.removeAll();            
             videoPnls = new ArrayList<>();
+
+            if(videos == null || videos.isEmpty()) {
+                revalidate();
+                repaint();
+                return;
+            }
+
             for(Video video : videos) {
                 videoPnls.add(new VideoPanel(prefs, video));
                 this.add(videoPnls.get(videoPnls.size()-1));
@@ -119,12 +126,12 @@ public class SearchPanel extends JPanel {
 
     }
 
-    private class SourceFolderPanel extends JPanel {
+    private class DownloadFolderPanel extends JPanel {
 
         private JLabel actualFolder;
         private IconPanel chooseFolder;
 
-        private SourceFolderPanel() {
+        private DownloadFolderPanel() {
             this.actualFolder = new JLabel(prefs.getDownloadFolder().getAbsolutePath());
             actualFolder.setForeground(new Color(200, 210, 220));
             this.chooseFolder = new IconPanel("folder", 32);
