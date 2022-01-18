@@ -14,13 +14,7 @@ public class IconPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private BufferedImage icon, defaultIcon, grayIcon;
-	private boolean center = true;
-
-	public IconPanel(String path, int size, boolean center) {
-		this(path, size);
-		this.center = center;
-	}
-
+	
 	public IconPanel(BufferedImage icon, int width, int height) {
 		this.setPreferredSize(new Dimension(width, height));
 		setBackground(Color.RED);

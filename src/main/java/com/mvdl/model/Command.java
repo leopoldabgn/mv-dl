@@ -136,7 +136,8 @@ public class Command {
            builder.append(line).append("\n");
            line = buffer.readLine();
         }
-            
+        buffer.close();
+        
         return builder.toString();
     }
 
