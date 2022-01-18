@@ -262,7 +262,6 @@ public class Command {
     public static List<VideoInfos> getVideoQualities(Video video) {
         List<VideoInfos> qualities = new ArrayList<VideoInfos>();
         String str = exec("yt-dlp -F https://www.youtube.com/watch?v="+video.getId());
-        System.out.println(str);
         if(str == null || !str.contains("\n"))
             return qualities;
         String[] lines = str.split("\n");
@@ -298,8 +297,8 @@ public class Command {
         return qualities;
     }
 
-    public void downloadVideo(Video video) {
-        downloadMusic(pref.getDownloadFolder(), video);
+    public void downloadVideo(Video video, String id) {
+        downloadVideo(pref.getDownloadFolder(), video, id);
     }
 
     public static void downloadVideo(File folder, Video video, String id) {

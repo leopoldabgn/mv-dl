@@ -5,7 +5,6 @@ import java.io.File;
 import com.mvdl.gui.GUI;
 import com.mvdl.model.Command;
 import com.mvdl.model.Preferences;
-import com.mvdl.model.Video;
 
 public class Launcher {
 

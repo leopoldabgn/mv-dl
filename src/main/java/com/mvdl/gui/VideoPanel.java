@@ -3,13 +3,14 @@ package com.mvdl.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -104,48 +105,163 @@ public class VideoPanel extends JPanel {
 
     private class DownloadPanel extends JPanel {
 
-        private IconPanel download;
+        private JButton dlVideo, dlMusic;
 
         private DownloadPanel() {
             setOpaque(false);
-            this.download = new IconPanel("download_icon", 32);
-            download.addMouseListener( new MouseAdapter() {
+            this.dlMusic = new JButton("Download music"); // new IconPanel("download_icon", 32);
+            dlMusic.addMouseListener( new MouseAdapter() {
                     public void mousePressed(MouseEvent e) {
-                        download.setEnabled(false);
+                        dlMusic.setEnabled(false);
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
                                 Command.downloadsInProgress++;
                                 command.downloadMusic(video);
-                                download.setEnabled(true);
+                                dlMusic.setEnabled(true);
                                 Command.downloadsInProgress--;
                             }
                         }).start();
                     }
                 }
             );
-            
-            setLayout(new GridBagLayout());
-            JButton dlVideo = new JButton();
+        
+            dlVideo = new JButton("Download Video");
             dlVideo.addActionListener(e -> {
-                JFrame frame = new JFrame();
-                frame.setSize(400, 400);
-                JPanel tmp = new JPanel();
-                List<VideoInfos> qualities = Command.getVideoQualities(video);
-                for(VideoInfos v : qualities) {
-                    tmp.add(new JLabel(v+""));
-                    tmp.setLayout(new BoxLayout(tmp, BoxLayout.Y_AXIS));
-                }
-                frame.getContentPane().add(tmp);
-                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                frame.setVisible(true);
+                new QualityFrame();
             });
-            JButton dlMusic = new JButton();
+
+            setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));    
             add(dlVideo);
-            add(download);
+            add(dlMusic);
         }
 
-        
+        public class QualityFrame extends JFrame {
+            
+            private List<QualityPanel> qualityPanels;
+            private QualityPanel selectedQuality;
+            private JLabel errorMsg;
+
+            public QualityFrame() {
+                setSize(400, 400);
+                qualityPanels = new ArrayList<QualityPanel>();
+                JPanel northPan = new JPanel();
+                JPanel tmp = new JPanel();
+                tmp.setLayout(new BoxLayout(tmp, BoxLayout.PAGE_AXIS));
+                tmp.add(new JLabel("Choose a video quality :"));
+                northPan.add(tmp);
+                JPanel centerPan = new JPanel();
+                List<VideoInfos> qualities = Command.getVideoQualities(video);
+                for(VideoInfos v : qualities) {
+                    QualityPanel pan = new QualityPanel(v);
+                    pan.addMouseListener(getListener(pan));
+                    qualityPanels.add(pan);
+                    centerPan.add(pan);
+                }
+                JPanel bottomPan = new JPanel();
+                JButton cancel = new JButton("Cancel");
+                JButton download = new JButton("Download");
+                bottomPan.add(cancel);
+                bottomPan.add(download);
+
+                cancel.addActionListener(e -> {
+                    dispose();
+                });
+
+                download.addActionListener(e -> {
+                    if(selectedQuality == null) {
+                        if(errorMsg == null) {
+                            errorMsg = new JLabel("You need to select a quality !");
+                            errorMsg.setForeground(Color.RED);
+                            ((JPanel)northPan.getComponent(0)).add(errorMsg, 0);
+                            revalidate();
+                            repaint();
+                        }
+                        return;
+                    }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Command.downloadsInProgress++;
+                            command.downloadVideo(video, selectedQuality.getInfos().getId());
+                            Command.downloadsInProgress--;
+                        }
+                    }).start();
+                    dispose();
+                });
+
+                setLayout(new BorderLayout());
+                getContentPane().add(northPan, BorderLayout.NORTH);
+                getContentPane().add(centerPan, BorderLayout.CENTER);
+                getContentPane().add(bottomPan, BorderLayout.SOUTH);
+                setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                setVisible(true);
+            }
+
+            public MouseListener getListener(QualityPanel quality) {
+                return new MouseAdapter() {
+                    
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+                        if(selectedQuality == quality)
+                            return;
+                        quality.setBorder(BorderFactory.createCompoundBorder(
+                                BorderFactory.createMatteBorder(2,  2,  2,  2, Color.BLACK),
+                                BorderFactory.createMatteBorder(3,  3,  3,  3, Color.WHITE)));
+                                quality.setSelected(true);
+                        if(selectedQuality != null) {
+                            selectedQuality.setSelected(false);
+                            selectedQuality.setBorder(BorderFactory.createLoweredBevelBorder());
+                        }
+                        selectedQuality = quality;
+                    }
+                    
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        if(!quality.isSelected())
+                            quality.setBorder(BorderFactory.createRaisedBevelBorder());
+                    }
+                    
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        if(!quality.isSelected())
+                            quality.setBorder(BorderFactory.createLoweredBevelBorder());
+                    }
+                    
+                };
+            }
+
+        }
+
+        public class QualityPanel extends JPanel {
+            
+            private VideoInfos infos;
+            private boolean selected;
+
+            public QualityPanel(VideoInfos infos) {
+                this.infos = infos;
+                String qp = infos.getResolution();
+                try {
+                    qp = (qp.split("x"))[1]+"p";
+                } catch(Exception e) {}
+                add(new JLabel(qp+" ("+infos.getSize()+")"));
+                setBorder(BorderFactory.createLoweredBevelBorder());
+            }
+    
+            public VideoInfos getInfos() {
+                return infos;
+            }
+
+            public boolean isSelected() {
+                return selected;
+            }
+
+            public void setSelected(boolean selected) {
+                this.selected = selected;
+            }
+    
+        }
+
     }
 
 }
