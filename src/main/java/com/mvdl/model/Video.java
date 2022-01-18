@@ -66,4 +66,48 @@ public class Video {
         return thumbnailURL;
     }
 
+    public static class VideoInfos {
+        private String id, extension, resolution, size = "";
+
+        public VideoInfos() {}
+        
+        @Override
+        public String toString() {
+            return id+" "+extension+" "+resolution+" "+size;
+        }
+
+        public String getId() {
+            return this.id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getExtension() {
+            return this.extension;
+        }
+
+        public void setExtension(String extension) {
+            this.extension = extension;
+        }
+
+        public String getResolution() {
+            return this.resolution;
+        }
+
+        public void setResolution(String resolution) {
+            this.resolution = resolution;
+        }
+
+        public String getSize() {
+            return this.size;
+        }
+
+        public void setSize(String size) {
+            this.size = size;
+        }
+
+    }
+
 }

@@ -5,10 +5,16 @@ import java.io.File;
 import com.mvdl.gui.GUI;
 import com.mvdl.model.Command;
 import com.mvdl.model.Preferences;
+import com.mvdl.model.Video;
 
 public class Launcher {
 
     public static void main(String[] args) {
+        /* TEST pour telecharger une video
+        Video video = new Video();
+        video.setId("gmdqrUwS0ok");
+        Command.downloadVideo(new File("/home/leopold/Musique"), video, "22");
+        */
         boolean ok = true;
         // OLD METHOD
         // Peut servir au cas où la methode actuelle ne fonctionne plus.
@@ -16,6 +22,9 @@ public class Launcher {
             System.out.println("- You need to install curl   (ubuntu : sudo apt install curl)");
             ok = false;
         }*/
+
+        // Commande qui pourra servir en cas de probleme
+        // yt-dlp --dump-json https://www.youtube.com/watch?v=
 
         // Important. Sinon on ne peut rien telecharger.
         if(!Command.checkPrgm("yt-dlp")) {

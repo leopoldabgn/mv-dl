@@ -2,20 +2,21 @@ package com.mvdl.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -23,6 +24,7 @@ import javax.swing.JTextArea;
 import com.mvdl.model.Command;
 import com.mvdl.model.Preferences;
 import com.mvdl.model.Video;
+import com.mvdl.model.Video.VideoInfos;
 
 public class VideoPanel extends JPanel {
 
@@ -124,6 +126,22 @@ public class VideoPanel extends JPanel {
             );
             
             setLayout(new GridBagLayout());
+            JButton dlVideo = new JButton();
+            dlVideo.addActionListener(e -> {
+                JFrame frame = new JFrame();
+                frame.setSize(400, 400);
+                JPanel tmp = new JPanel();
+                List<VideoInfos> qualities = Command.getVideoQualities(video);
+                for(VideoInfos v : qualities) {
+                    tmp.add(new JLabel(v+""));
+                    tmp.setLayout(new BoxLayout(tmp, BoxLayout.Y_AXIS));
+                }
+                frame.getContentPane().add(tmp);
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.setVisible(true);
+            });
+            JButton dlMusic = new JButton();
+            add(dlVideo);
             add(download);
         }
 

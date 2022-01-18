@@ -10,6 +10,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mvdl.model.Video.VideoInfos;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -255,6 +257,68 @@ public class Command {
         } catch(Exception e) {
             return "";
         }
+    }
+
+    public static List<VideoInfos> getVideoQualities(Video video) {
+        List<VideoInfos> qualities = new ArrayList<VideoInfos>();
+        String str = exec("yt-dlp -F https://www.youtube.com/watch?v="+video.getId());
+        System.out.println(str);
+        if(str == null || !str.contains("\n"))
+            return qualities;
+        String[] lines = str.split("\n");
+        VideoInfos vInf = null;
+        for(String s : lines) {
+            vInf = new VideoInfos();
+            try {
+                String[] sp = s.split("[ ]+");
+                String id = sp[0],
+                       ext = sp[1],
+                       res = sp[2];
+                //System.out.println(Arrays.toString(sp));
+                if(id.length() > 2 || !ext.equals("mp4"))
+                    continue;
+                
+                vInf.setId(id);
+                vInf.setExtension(ext);
+                vInf.setResolution(res);
+                for(String s2 : sp) {
+                    if(s2.contains("KiB") || s2.contains("MiB")) {
+                        vInf.setSize(s2);
+                        break;
+                    }
+                }
+            } catch(Exception e) {
+                vInf = null;
+            }
+            
+            if(vInf != null)
+                qualities.add(vInf);
+        }
+        
+        return qualities;
+    }
+
+    public void downloadVideo(Video video) {
+        downloadMusic(pref.getDownloadFolder(), video);
+    }
+
+    public static void downloadVideo(File folder, Video video, String id) {
+        if(folder == null || !folder.isDirectory())
+            return;
+        ProcessBuilder pB = new ProcessBuilder(
+            "yt-dlp", // works with "youtube-dl"
+            id,
+            "--output", folder.getAbsolutePath()+"/%(title)s.mp4",
+            "https://www.youtube.com/watch?v="+video.getId()
+        );
+        
+        Process p;
+        try {
+            p = pB.start();
+            p.waitFor();
+            System.out.println(p.exitValue());
+            p.destroy();
+        } catch (Exception e1) {}
     }
 
     ////////////////////////////////////////////////////////
