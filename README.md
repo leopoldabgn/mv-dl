@@ -1,4 +1,4 @@
-# mv-dl -> Music Video Dowload
+# Music Video Dowload
 
 Ce projet à pour but de telecharger des videos et des musiques facilement.
 Il utilise notamment le projet yt-dlp pour pouvoir les telecharger.
