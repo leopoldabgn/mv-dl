@@ -26,4 +26,6 @@ buildNumber.properties
 .factorypath
 .project
 .vscode/
-music/*\.mp3
+music/*.mp3
+music/*.mp4
+bin/
