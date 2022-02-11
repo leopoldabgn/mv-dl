@@ -3,7 +3,6 @@ package com.mvdl.launcher;
 import java.io.File;
 
 import com.mvdl.gui.GUI;
-import com.mvdl.model.Command;
 import com.mvdl.model.Preferences;
 
 public class Launcher {
@@ -14,7 +13,8 @@ public class Launcher {
         video.setId("gmdqrUwS0ok");
         Command.downloadVideo(new File("/home/leopold/Musique"), video, "22");
         */
-        boolean ok = true;
+
+       // boolean ok = true;
         // OLD METHOD
         // Peut servir au cas où la methode actuelle ne fonctionne plus.
         /*if(!Command.checkPrgm("curl")) {
@@ -26,16 +26,16 @@ public class Launcher {
         // yt-dlp --dump-json https://www.youtube.com/watch?v=
 
         // Important. Sinon on ne peut rien telecharger.
-        if(!Command.checkPrgm("yt-dlp")) {
+        /*if(!Command.checkPrgm("yt-dlp")) {
             System.out.println("- You need to install yt-dlp (ubuntu : sudo apt install yt-dlp)");
             ok = false;
-        }
-        if(!ok)
-            return;
+        }*/
+        // if(!ok)
+        //    return;
         // On recupere le fichier de prefs si il existe.
 		// Sinon, on en cree un nouveau
 		Preferences prefs = new Preferences(new File("music"));
         new GUI(prefs, 800, 600);
     }
-
+    
 }

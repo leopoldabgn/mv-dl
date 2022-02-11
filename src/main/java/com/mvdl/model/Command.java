@@ -94,8 +94,11 @@ public class Command {
     public static void downloadMusic(File folder, Video video) {
         if(folder == null || !folder.isDirectory())
             return;
+        String pgrm = "./yt-dlp";
+        if(isWindows())
+            pgrm += ".exe";
         ProcessBuilder pB = new ProcessBuilder(
-            "yt-dlp", // works with "youtube-dl"
+            pgrm, // works with "youtube-dl"
             "--extract-audio",
             "--audio-format", "mp3",
             "--audio-quality", "0",
@@ -405,6 +408,18 @@ public class Command {
         for(int i=begin;i<text.length() && text.charAt(i) != delimiter;i++)
             str += text.charAt(i);
         return str;
+    }
+
+    public static String getOS() {
+        return System.getProperty("os.name");
+    }
+
+    public static boolean isLinux() {
+        return getOS().contains("nux");
+    }
+
+    public static boolean isWindows() {
+        return getOS().contains("win");
     }
 
 }
