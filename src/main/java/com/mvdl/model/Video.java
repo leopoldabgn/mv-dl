@@ -92,6 +92,17 @@ public class Video {
             this.extension = extension;
         }
 
+        public String getQuality() {
+            String resolution = getResolution(),
+                   error_msg = "no quality";
+            if(resolution == null || !resolution.contains("x"))
+                return error_msg;
+
+            String[] qp = resolution.split("x");
+            if(qp != null && qp.length >= 2)
+                return qp[1]+"p";
+            return error_msg;
+        }
         public String getResolution() {
             return this.resolution;
         }

@@ -19,9 +19,12 @@ import org.json.simple.parser.ParseException;
 
 public class Command {
 
+    // Location du logiciel yt_dlp avec la bonne extension
+    private static String yt_dlp = isWindows() ? "./yt-dlp.exe" : "./yt-dlp",
+                          ffmpeg_loc = "."; // location du dossier ou se situe ffmpeg
     public static int downloadsInProgress;
 
-     private Preferences pref;
+    private Preferences pref;
 
     public Command(Preferences pref) {
         this.pref = pref;
@@ -29,7 +32,7 @@ public class Command {
 
     public static String exec(String cmd) {
         String s, result = "";
-        Process p;
+        Process p = null;
         try {
             p = Runtime.getRuntime().exec(cmd);
             BufferedReader br = new BufferedReader(
@@ -37,9 +40,10 @@ public class Command {
             while ((s = br.readLine()) != null)
                 result += s+"\n";
             p.waitFor();
-            //System.out.println ("exit: " + p.exitValue());
             p.destroy();
-        } catch (Exception e1) {}
+        } catch (Exception e1) {
+            System.out.println ("exit: " + p.exitValue());
+        }
         return result;
     }
 
@@ -94,11 +98,9 @@ public class Command {
     public static void downloadMusic(File folder, Video video) {
         if(folder == null || !folder.isDirectory())
             return;
-        String pgrm = "./yt-dlp";
-        if(isWindows())
-            pgrm += ".exe";
         ProcessBuilder pB = new ProcessBuilder(
-            pgrm, // works with "youtube-dl"
+            yt_dlp, // works with "youtube-dl"
+            "--ffmpeg-location", ffmpeg_loc,
             "--extract-audio",
             "--audio-format", "mp3",
             "--audio-quality", "0",
@@ -118,7 +120,7 @@ public class Command {
         Process p;
         int exit = 1;
         try {
-            p = Runtime.getRuntime().exec(prgm+" --version");
+            p = Runtime.getRuntime().exec(prgm+" --help");
             p.waitFor();
             exit = p.exitValue();
             p.destroy();
@@ -265,7 +267,8 @@ public class Command {
 
     public static List<VideoInfos> getVideoQualities(Video video) {
         List<VideoInfos> qualities = new ArrayList<VideoInfos>();
-        String str = exec("yt-dlp -F https://www.youtube.com/watch?v="+video.getId());
+        String str = exec(yt_dlp+" -F https://www.youtube.com/watch?v="+video.getId());
+        
         if(str == null || !str.contains("\n"))
             return qualities;
         String[] lines = str.split("\n");
@@ -277,8 +280,8 @@ public class Command {
                 String id = sp[0],
                        ext = sp[1],
                        res = sp[2];
-                //System.out.println(Arrays.toString(sp));
-                if(id.length() > 2 || !ext.equals("mp4"))
+                       
+                if(!ext.equals("mp4")) // || id.length() > 2
                     continue;
                 
                 vInf.setId(id);
@@ -301,27 +304,29 @@ public class Command {
         return qualities;
     }
 
-    public void downloadVideo(Video video, String id) {
-        downloadVideo(pref.getDownloadFolder(), video, id);
+    public void downloadVideo(Video video, VideoInfos infos) {
+        downloadVideo(pref.getDownloadFolder(), video, infos);
     }
 
-    public static void downloadVideo(File folder, Video video, String id) {
+    public static void downloadVideo(File folder, Video video, VideoInfos infos) {
         if(folder == null || !folder.isDirectory())
             return;
         ProcessBuilder pB = new ProcessBuilder(
-            "yt-dlp", // works with "youtube-dl"
-            id,
-            "--output", folder.getAbsolutePath()+"/%(title)s.mp4",
+            yt_dlp, // works with "youtube-dl"
+            "--ffmpeg-location", ffmpeg_loc,
+            "-f", infos.getId()+"+140", "--write-sub",
+            "--output", folder.getAbsolutePath()+"/%(title)s "+infos.getQuality()+".mp4",
             "https://www.youtube.com/watch?v="+video.getId()
         );
         
-        Process p;
+        Process p = null;
         try {
             p = pB.start();
             p.waitFor();
-            System.out.println(p.exitValue());
             p.destroy();
-        } catch (Exception e1) {}
+        } catch (Exception e1) {
+            System.out.println("exit : "+p.exitValue());
+        }
     }
 
     ////////////////////////////////////////////////////////
@@ -334,7 +339,7 @@ public class Command {
     // TODO: Recreer la fonction avec l'aide de exec.
     public static String getHtmlFromSearch(String search) {
         String s, html = "";
-        Process p;
+        Process p = null;
         search = search.replace(" ", "%20");
         try {
             p = Runtime.getRuntime().exec("curl -s https://www.youtube.com/results?search_query=\""+search+"\"");
@@ -343,9 +348,10 @@ public class Command {
             while ((s = br.readLine()) != null)
                 html += s+"\n";
             p.waitFor();
-            //System.out.println ("exit: " + p.exitValue());
             p.destroy();
-        } catch (Exception e1) {}
+        } catch (Exception e1) {
+            System.out.println ("exit: " + p.exitValue());
+        }
 
         return html;
     }
