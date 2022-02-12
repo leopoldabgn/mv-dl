@@ -183,7 +183,9 @@ public class VideoPanel extends JPanel {
                         @Override
                         public void run() {
                             Command.downloadsInProgress++;
+                            dlVideo.setEnabled(false);
                             command.downloadVideo(video, selectedQuality.getInfos());
+                            dlVideo.setEnabled(true);
                             Command.downloadsInProgress--;
                         }
                     }).start();
