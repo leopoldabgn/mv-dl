@@ -10,12 +10,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mvdl.model.Video.VideoInfos;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import com.mvdl.model.Video.VideoInfos;
 
 public class Command {
 
@@ -42,7 +42,9 @@ public class Command {
             p.waitFor();
             p.destroy();
         } catch (Exception e1) {
-            System.out.println ("exit: " + p.exitValue());
+        	if(p != null)
+        		System.out.println ("exit: " + p.exitValue());
+        	e1.printStackTrace();
         }
         return result;
     }
@@ -91,16 +93,16 @@ public class Command {
        return code;
     }
 
-    public void downloadMusic(Video video) {
-        downloadMusic(pref.getDownloadFolder(), video);
+    public String downloadMusic(Video video) {
+        return downloadMusic(pref.getDownloadFolder(), video);
     }
 
-    public static void downloadMusic(File folder, Video video) {
+    public static String downloadMusic(File folder, Video video) {
         if(folder == null || !folder.isDirectory())
-            return;
+            return "";
         ProcessBuilder pB = new ProcessBuilder(
             yt_dlp, // works with "youtube-dl"
-            "--ffmpeg-location", ffmpeg_loc,
+            //"--ffmpeg-location", ffmpeg_loc,
             "--extract-audio",
             "--audio-format", "mp3",
             "--audio-quality", "0",
@@ -108,12 +110,22 @@ public class Command {
             "https://www.youtube.com/watch?v="+video.getId()
         );
         
-        Process p;
-        try {
-            p = pB.start();
-            p.waitFor();
-            p.destroy();
-        } catch (Exception e1) {}
+        StringBuilder output = new StringBuilder();
+		try {
+			Process process = pB.start();
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(process.getInputStream()));
+
+			String line;
+			while ((line = reader.readLine()) != null)
+				output.append(line + "\n");
+
+			process.waitFor();
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		return output.toString();
     }
 
     public static boolean checkPrgm(String prgm) {
@@ -304,29 +316,36 @@ public class Command {
         return qualities;
     }
 
-    public void downloadVideo(Video video, VideoInfos infos) {
-        downloadVideo(pref.getDownloadFolder(), video, infos);
+    public String downloadVideo(Video video, VideoInfos infos) {
+        return downloadVideo(pref.getDownloadFolder(), video, infos);
     }
 
-    public static void downloadVideo(File folder, Video video, VideoInfos infos) {
+    public static String downloadVideo(File folder, Video video, VideoInfos infos) {
         if(folder == null || !folder.isDirectory())
-            return;
+            return null;
         ProcessBuilder pB = new ProcessBuilder(
-            yt_dlp, // works with "youtube-dl"
-            "--ffmpeg-location", ffmpeg_loc,
-            "-f", infos.getId()+"+140", "--write-sub",
-            "--output", folder.getAbsolutePath()+"/%(title)s "+infos.getQuality()+".mp4",
-            "https://www.youtube.com/watch?v="+video.getId()
-        );
-        
-        Process p = null;
-        try {
-            p = pB.start();
-            p.waitFor();
-            p.destroy();
-        } catch (Exception e1) {
-            System.out.println("exit : "+p.exitValue());
-        }
+                yt_dlp, // works with "youtube-dl"
+                //"--ffmpeg-location", ffmpeg_loc,
+                "-f", infos.getId()+"+140", "--write-sub",
+                "--output", folder.getAbsolutePath()+"/%(title)s "+infos.getQuality()+".mp4",
+                "https://www.youtube.com/watch?v="+video.getId()
+            );
+        StringBuilder output = new StringBuilder();
+		try {
+			Process process = pB.start();
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(process.getInputStream()));
+
+			String line;
+			while ((line = reader.readLine()) != null)
+				output.append(line + "\n");
+
+			process.waitFor();
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
+        	
+        return output.toString();
     }
 
     ////////////////////////////////////////////////////////
@@ -421,11 +440,11 @@ public class Command {
     }
 
     public static boolean isLinux() {
-        return getOS().contains("nux");
+        return getOS().toUpperCase().contains("NUX");
     }
 
     public static boolean isWindows() {
-        return getOS().contains("win");
+        return getOS().toUpperCase().contains("WIN");
     }
 
 }
