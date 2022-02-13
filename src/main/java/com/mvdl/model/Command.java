@@ -100,9 +100,11 @@ public class Command {
     public static String downloadMusic(File folder, Video video) {
         if(folder == null || !folder.isDirectory())
             return "";
+        String ffmpeg_attr = isWindows() ? "" : "--ffmpeg-location";
+        String ffmpeg = isWindows() ? "" : ffmpeg_loc;
         ProcessBuilder pB = new ProcessBuilder(
             yt_dlp, // works with "youtube-dl"
-            //"--ffmpeg-location", ffmpeg_loc,
+            ffmpeg_attr, ffmpeg,
             "--extract-audio",
             "--audio-format", "mp3",
             "--audio-quality", "0",
@@ -323,13 +325,17 @@ public class Command {
     public static String downloadVideo(File folder, Video video, VideoInfos infos) {
         if(folder == null || !folder.isDirectory())
             return null;
-        ProcessBuilder pB = new ProcessBuilder(
+        String ffmpeg_attr = isWindows() ? "" : "--ffmpeg-location";
+        String ffmpeg = isWindows() ? "" : ffmpeg_loc;
+        ProcessBuilder pB;
+        pB = new ProcessBuilder(
                 yt_dlp, // works with "youtube-dl"
-                //"--ffmpeg-location", ffmpeg_loc,
+                ffmpeg_attr, ffmpeg,
                 "-f", infos.getId()+"+140", "--write-sub",
                 "--output", folder.getAbsolutePath()+"/%(title)s "+infos.getQuality()+".mp4",
                 "https://www.youtube.com/watch?v="+video.getId()
             );
+        
         StringBuilder output = new StringBuilder();
 		try {
 			Process process = pB.start();
