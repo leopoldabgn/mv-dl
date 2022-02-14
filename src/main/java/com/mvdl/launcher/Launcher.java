@@ -1,15 +1,13 @@
 package com.mvdl.launcher;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.mvdl.gui.GUI;
 import com.mvdl.model.Preferences;
 
 public class Launcher {
 
-    /**
-     * @param args
-     */
     public static void main(String[] args) {
         /* TEST pour telecharger une video
         Video video = new Video();
@@ -46,7 +44,14 @@ public class Launcher {
         */
         // On recupere le fichier de prefs si il existe.
 		// Sinon, on en cree un nouveau
-		Preferences prefs = new Preferences(new File("music"));
+		Preferences prefs = null;
+
+        try {
+            prefs = Preferences.load();
+        } catch (ClassNotFoundException | IOException e) {
+            prefs = new Preferences();
+        }
+
         new GUI(prefs, 800, 600);
     }
     

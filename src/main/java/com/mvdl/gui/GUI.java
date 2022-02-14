@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -33,7 +34,6 @@ public class GUI extends JFrame {
 
 		setSearchPanel();
 		
-		// TODO: ONCLOSE WINDOW, on enregistre le fichier de prefs...
 		this.addWindowListener(new WindowAdapter()
         {
             @Override
@@ -44,7 +44,12 @@ public class GUI extends JFrame {
 						" because downloads are still in progress.");
 					return;
 				}
-                e.getWindow().dispose();
+				e.getWindow().dispose();
+				try {
+					prefs.save();
+				} catch (IOException e1) {
+					System.out.println("Error: can't save preferences file");
+				}
 				System.exit(0);
             }
         });
