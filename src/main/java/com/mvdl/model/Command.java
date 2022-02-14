@@ -20,8 +20,9 @@ import com.mvdl.model.Video.VideoInfos;
 public class Command {
 
     // Location du logiciel yt_dlp avec la bonne extension
-    private static String yt_dlp = isWindows() ? "./yt-dlp.exe" : "./yt-dlp",
-                          ffmpeg_loc = "."; // location du dossier ou se situe ffmpeg
+    private static String softFolder = "./soft/",
+                          yt_dlp = isWindows() ? softFolder+"yt-dlp.exe" : softFolder+"yt-dlp",
+                          ffmpeg_loc = softFolder; // location du dossier ou se situe ffmpeg
     public static int downloadsInProgress;
 
     private Preferences pref;
