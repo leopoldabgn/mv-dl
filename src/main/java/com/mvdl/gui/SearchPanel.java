@@ -25,20 +25,23 @@ import com.mvdl.model.Video;
 
 public class SearchPanel extends JPanel {
 
+    private GUI gui;
     private Preferences prefs;
 
     private SearchBar searchBar;
     private DownloadFolderPanel folderPan;
+    private IconPanel settings;
     private ListPanel listPan;
 
-    public SearchPanel(Preferences prefs) {
+    public SearchPanel(GUI gui, Preferences prefs) {
+        this.gui = gui;
         this.prefs = prefs;
         this.searchBar = new SearchBar();
         this.folderPan = new DownloadFolderPanel();
         this.listPan = new ListPanel();
         
         JPanel northPan = new JPanel();
-        northPan.setBackground(new Color(70, 70, 70));
+        northPan.setBackground(GUI.darkColor1);
         northPan.setLayout(new BorderLayout());
         int border = 10;
         northPan.setBorder(BorderFactory.createEmptyBorder(border, border, border, border));
@@ -48,13 +51,27 @@ public class SearchPanel extends JPanel {
         tmp.add(searchBar);
 
         northPan.add(tmp, BorderLayout.WEST);
-        northPan.add(folderPan, BorderLayout.EAST);
+
+        tmp = new JPanel();
+        tmp.setOpaque(false);
+        tmp.add(folderPan);
+
+        settings = new IconPanel("settings-icon", 32);
+        settings.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                gui.setSettingsPanel();
+            }
+        });
+        tmp.add(settings);
+
+        northPan.add(tmp, BorderLayout.EAST);
 
         JScrollPane scrollPane = new JScrollPane(listPan, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                                                           JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         this.setLayout(new BorderLayout());
-        this.setBackground(new Color(37, 37, 38));
+        this.setBackground(GUI.darkColor2);
         this.add(northPan, BorderLayout.NORTH);
         this.add(scrollPane, BorderLayout.CENTER);
     }
@@ -98,7 +115,7 @@ public class SearchPanel extends JPanel {
         
         private ListPanel() {
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-            setBackground(new Color(37, 37, 38));
+            setBackground(GUI.darkColor2);
         }
 
         private ListPanel(List<Video> videos) {
@@ -133,7 +150,7 @@ public class SearchPanel extends JPanel {
 
         private DownloadFolderPanel() {
             this.actualFolder = new JLabel(prefs.getDownloadFolder().getAbsolutePath());
-            actualFolder.setForeground(new Color(200, 210, 220));
+            actualFolder.setForeground(GUI.textColor1);
             this.chooseFolder = new IconPanel("folder", 32);
             chooseFolder.addMouseListener(new MouseAdapter() {
                 public void mousePressed(MouseEvent e) {

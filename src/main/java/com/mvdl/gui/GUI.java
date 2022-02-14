@@ -1,5 +1,6 @@
 package com.mvdl.gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -12,6 +13,10 @@ import com.mvdl.model.Preferences;
 
 public class GUI extends JFrame {
     
+    public static Color darkColor1 = new Color(70, 70, 70),
+                        darkColor2 = new Color(37, 37, 38);
+	public static Color textColor1 = new Color(200, 210, 220);
+
 	private Preferences prefs;
 
     public GUI(Preferences prefs, int w, int h) {
@@ -49,8 +54,17 @@ public class GUI extends JFrame {
 
     public void setSearchPanel() {
         this.getContentPane().removeAll();
-        this.getContentPane().add(new SearchPanel(prefs));
+        this.getContentPane().add(new SearchPanel(this, prefs));
+		revalidate();
+		repaint();
     }
+
+	public void setSettingsPanel() {
+		this.getContentPane().removeAll();
+		this.getContentPane().add(new SettingsPanel(this, prefs));
+		revalidate();
+		repaint();
+	}
 
 	public static void showErrorWindow(JFrame frame, String msg) {
 		JOptionPane.showMessageDialog(frame, msg, "Error", JOptionPane.ERROR_MESSAGE);

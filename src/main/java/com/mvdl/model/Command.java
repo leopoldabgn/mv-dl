@@ -95,10 +95,10 @@ public class Command {
     }
 
     public String downloadMusic(Video video) {
-        return downloadMusic(pref.getDownloadFolder(), video);
+        return downloadMusic(pref.getDownloadFolder(), video, pref.getAudioFormat());
     }
 
-    public static String downloadMusic(File folder, Video video) {
+    public static String downloadMusic(File folder, Video video, String audioFormat) {
         if(folder == null || !folder.isDirectory())
             return "";
         String ffmpeg_attr = isWindows() ? "" : "--ffmpeg-location";
@@ -107,9 +107,9 @@ public class Command {
             yt_dlp, // works with "youtube-dl"
             ffmpeg_attr, ffmpeg,
             "--extract-audio",
-            "--audio-format", "mp3",
+            "--audio-format", audioFormat,
             "--audio-quality", "0",
-            "--output", folder.getAbsolutePath()+"/%(title)s.mp3",
+            "--output", folder.getAbsolutePath()+"/%(title)s."+audioFormat,
             "https://www.youtube.com/watch?v="+video.getId()
         );
         
