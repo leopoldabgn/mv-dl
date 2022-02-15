@@ -149,6 +149,10 @@ public class VideoPanel extends JPanel {
 
             public QualityFrame() {
                 setSize(400, 400);
+                this.setResizable(false);
+                this.setLocationRelativeTo(null);
+                setDefaultLookAndFeelDecorated(true);
+                
                 qualityPanels = new ArrayList<QualityPanel>();
                 JPanel northPan = new JPanel();
                 JPanel tmp = new JPanel();
