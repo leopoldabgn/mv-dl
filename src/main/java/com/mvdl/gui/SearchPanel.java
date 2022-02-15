@@ -10,7 +10,6 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -90,18 +89,31 @@ public class SearchPanel extends JPanel {
             this.setOpaque(false);
             this.searchField = new JTextField();
             searchField.setToolTipText("Search...");
-            this.searchButton = new IconPanel("search-icon", 40);
+            this.searchButton = new IconPanel("search_icon", 40);
     
             searchButton.addMouseListener(new MouseAdapter() {
+
                 public void mousePressed(MouseEvent e) {
                     super.mousePressed(e);
                     ///////// OLD METHOD //////////
                     // String HTMLresult = Command.getHtmlFromSearch(searchField.getText());
                     // List<Video> videos = Command.getVideos(HTMLresult);
                     ///////////////////////////////
-                    List<Video> videos = Command.getVideosByJSON(Command.cutHTML(Command.getYtbHTMLCode(searchField.getText())));
-                    listPan.refresh(videos);
+                    searchButton.setEnabled(false);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            List<Video> videos = Command.getVideosByJSON(Command.cutHTML(Command.getYtbHTMLCode(searchField.getText())));
+                            listPan.refresh(videos);
+                        }
+                    }).start();
                 }
+
+                public void mouseReleased(MouseEvent e) {
+                    super.mouseReleased(e);
+                    searchButton.setEnabled(true);
+                }
+
             });
     
             this.setPreferredSize(new Dimension(350, HEIGHT));
