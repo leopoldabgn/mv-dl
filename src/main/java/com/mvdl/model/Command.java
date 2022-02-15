@@ -10,14 +10,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mvdl.gui.ProgressBar;
+import com.mvdl.gui.ProgressBar.Mode;
+import com.mvdl.model.Video.VideoInfos;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import com.mvdl.gui.ProgressBar;
-import com.mvdl.gui.ProgressBar.Mode;
-import com.mvdl.model.Video.VideoInfos;
 
 public class Command {
 
@@ -357,11 +357,15 @@ public class Command {
         return qualities;
     }
 
-    public String downloadVideo(Video video, VideoInfos infos) {
-        return downloadVideo(pref.getDownloadFolder(), video, infos);
+    public String downloadVideo(Video video, VideoInfos infos, ProgressBar progressBar) {
+        return downloadVideo(pref.getDownloadFolder(), video, infos, progressBar);
     }
 
-    public static String downloadVideo(File folder, Video video, VideoInfos infos) {
+    public String downloadVideo(Video video, VideoInfos infos) {
+        return downloadVideo(pref.getDownloadFolder(), video, infos, null);
+    }
+
+    public static String downloadVideo(File folder, Video video, VideoInfos infos, ProgressBar progressBar) {
         if(folder == null || !folder.isDirectory())
             return null;
         String ffmpeg_attr = isWindows() ? "" : "--ffmpeg-location";
@@ -374,7 +378,9 @@ public class Command {
                 "--output", folder.getAbsolutePath()+"/%(title)s "+infos.getQuality()+".mp4",
                 "https://www.youtube.com/watch?v="+video.getId()
             );
-        
+        if(progressBar != null)
+            progressBar.setProgress(0);
+		
         StringBuilder output = new StringBuilder();
 		try {
 			Process process = pB.start();
@@ -382,14 +388,30 @@ public class Command {
 					new InputStreamReader(process.getInputStream()));
 
 			String line;
-			while ((line = reader.readLine()) != null)
+            double progress = 0;
+			while ((line = reader.readLine()) != null) {
 				output.append(line + "\n");
+                if(progressBar != null) {
+                    if(progress < 100) {
+                        progress = getProgress(line);
+                        progressBar.setProgress(progress);
+                    }
+                    else if(progress >= 100 && progressBar.getMode() != Mode.CONVERSION)
+                        progressBar.switchToConversion();
+                }
+            }
+
+            if(progressBar != null && progressBar.getMode() != Mode.CONVERSION)
+                progressBar.switchToConversion();
 
 			process.waitFor();
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
-        	
+        
+        if(progressBar != null)
+            progressBar.switchToDone();
+
         return output.toString();
     }
 

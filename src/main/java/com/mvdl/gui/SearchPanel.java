@@ -1,7 +1,6 @@
 package com.mvdl.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -85,20 +84,24 @@ public class SearchPanel extends JPanel {
         public static final int HEIGHT = 40;
     
         private JTextField searchField;
-        private JButton searchButton;
+        private IconPanel searchButton;
     
         public SearchBar() {
+            this.setOpaque(false);
             this.searchField = new JTextField();
             searchField.setToolTipText("Search...");
-            this.searchButton = new JButton("Search");
+            this.searchButton = new IconPanel("search-icon", 40);
     
-            searchButton.addActionListener(e -> {
-                ///////// OLD METHOD //////////
-                // String HTMLresult = Command.getHtmlFromSearch(searchField.getText());
-                // List<Video> videos = Command.getVideos(HTMLresult);
-                ///////////////////////////////
-                List<Video> videos = Command.getVideosByJSON(Command.cutHTML(Command.getYtbHTMLCode(searchField.getText())));
-                listPan.refresh(videos);
+            searchButton.addMouseListener(new MouseAdapter() {
+                public void mousePressed(MouseEvent e) {
+                    super.mousePressed(e);
+                    ///////// OLD METHOD //////////
+                    // String HTMLresult = Command.getHtmlFromSearch(searchField.getText());
+                    // List<Video> videos = Command.getVideos(HTMLresult);
+                    ///////////////////////////////
+                    List<Video> videos = Command.getVideosByJSON(Command.cutHTML(Command.getYtbHTMLCode(searchField.getText())));
+                    listPan.refresh(videos);
+                }
             });
     
             this.setPreferredSize(new Dimension(350, HEIGHT));

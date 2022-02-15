@@ -2,8 +2,9 @@ package com.mvdl.gui;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 
@@ -17,7 +18,7 @@ public class IconPanel extends JPanel {
 	
 	public IconPanel(BufferedImage icon, int width, int height) {
 		this.setPreferredSize(new Dimension(width, height));
-		setBackground(Color.RED);
+		setOpaque(false);
 		this.icon = icon;
 		this.defaultIcon = icon;
 	}

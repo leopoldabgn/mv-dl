@@ -8,6 +8,7 @@ import java.util.HashMap;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
@@ -38,9 +39,15 @@ public class SettingsPanel extends JPanel {
         audioFormats = new HashMap<String, JRadioButton>();
         videoFormats = new HashMap<String, JRadioButton>();
 
+        JLabel audioLbl = new JLabel("Choose Audio format :");
+        audioLbl.setFont(audioLbl.getFont().deriveFont(24.0f));
+        audioLbl.setForeground(GUI.textColor2);
         JPanel audioPan = new JPanel();
         audioPan.setOpaque(false);
 
+        JLabel videoLbl = new JLabel("Choose Video format :");
+        videoLbl.setForeground(GUI.textColor2);
+        videoLbl.setFont(audioLbl.getFont().deriveFont(24.0f));
         JPanel videoPan = new JPanel();
         videoPan.setOpaque(false);
 
@@ -53,7 +60,9 @@ public class SettingsPanel extends JPanel {
         JPanel centerPan = new JPanel();
         centerPan.setOpaque(false);
         centerPan.setLayout(new BoxLayout(centerPan, BoxLayout.Y_AXIS));
+        centerPan.add(audioLbl);
         centerPan.add(audioPan);
+        centerPan.add(videoLbl);
         centerPan.add(videoPan);
 
         IconPanel backArrow = new IconPanel("left_arrow", 64);
@@ -84,6 +93,7 @@ public class SettingsPanel extends JPanel {
             grp.add(radio);
             panel.add(radio);
             radio.addChangeListener(getAudioVideoListener(prefs, music));
+            radio.setFont(radio.getFont().deriveFont(24.0f));
             hash.put(str, radio);
             radio.setForeground(GUI.textColor1);
             radio.setOpaque(false);

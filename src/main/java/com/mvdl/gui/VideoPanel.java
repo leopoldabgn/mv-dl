@@ -7,6 +7,8 @@ import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -105,12 +107,13 @@ public class VideoPanel extends JPanel {
 
     private class DownloadPanel extends JPanel {
 
-        private JButton dlVideo, dlMusic;
+        private IconPanel dlVideo, dlMusic;
+        private ProgressBar progressBar;
 
         private DownloadPanel() {
             setOpaque(false);
-            final ProgressBar progressBar = new ProgressBar();
-            this.dlMusic = new JButton("Download music"); // new IconPanel("download_icon", 32);
+            this.progressBar = new ProgressBar();
+            this.dlMusic = new IconPanel("download_music", 64);
             dlMusic.addMouseListener( new MouseAdapter() {
                     public void mousePressed(MouseEvent e) {
                         dlMusic.setEnabled(false);
@@ -127,17 +130,25 @@ public class VideoPanel extends JPanel {
                 }
             );
         
-            dlVideo = new JButton("Download Video");
-            dlVideo.addActionListener(e -> {
-                new QualityFrame();
+            dlVideo = new IconPanel("download_video", 64); // new JButton("Download Video");
+            dlVideo.addMouseListener(new MouseAdapter() {
+                public void mousePressed(MouseEvent e) {
+                    super.mousePressed(e);
+                    dlVideo.setEnabled(false);
+                    new QualityFrame();
+                }
             });
 
             JPanel pan = new JPanel();
             pan.setOpaque(false);
             pan.add(progressBar);
-            setLayout(new GridLayout(3, 1));    
-            add(dlVideo);
-            add(dlMusic);
+            setLayout(new GridLayout(2, 1));
+
+            JPanel musicVideoPan = new JPanel();
+            musicVideoPan.setOpaque(false);
+            musicVideoPan.add(dlMusic);
+            musicVideoPan.add(dlVideo);
+            add(musicVideoPan);
             add(pan);
         }
 
@@ -152,7 +163,16 @@ public class VideoPanel extends JPanel {
                 this.setResizable(false);
                 this.setLocationRelativeTo(null);
                 setDefaultLookAndFeelDecorated(true);
-                
+
+                this.addWindowListener(new WindowAdapter()
+                {
+                    @Override
+                    public void windowClosing(WindowEvent e)
+                    {
+                        dlVideo.setEnabled(true);
+                    }
+                });
+
                 qualityPanels = new ArrayList<QualityPanel>();
                 JPanel northPan = new JPanel();
                 JPanel tmp = new JPanel();
@@ -174,6 +194,7 @@ public class VideoPanel extends JPanel {
                 bottomPan.add(download);
 
                 cancel.addActionListener(e -> {
+                    dlVideo.setEnabled(true);
                     dispose();
                 });
 
@@ -192,8 +213,8 @@ public class VideoPanel extends JPanel {
                         @Override
                         public void run() {
                             Command.downloadsInProgress++;
-                            dlVideo.setEnabled(false);
-                            command.downloadVideo(video, selectedQuality.getInfos());
+                            command.downloadVideo(video, selectedQuality.getInfos(),
+                                                  progressBar);
                             dlVideo.setEnabled(true);
                             Command.downloadsInProgress--;
                         }

@@ -16,7 +16,8 @@ public class GUI extends JFrame {
     
     public static Color darkColor1 = new Color(70, 70, 70),
                         darkColor2 = new Color(37, 37, 38);
-	public static Color textColor1 = new Color(200, 210, 220);
+	public static Color textColor1 = new Color(200, 210, 220),
+						textColor2 = new Color(10, 15, 15);
 
 	private Preferences prefs;
 	private SearchPanel searchPanel;
