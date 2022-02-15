@@ -28,5 +28,7 @@ buildNumber.properties
 .vscode/
 music/*.mp3
 music/*.mp4
+music/*.wav
+music/*.m4a
 music/*.webm
 bin/

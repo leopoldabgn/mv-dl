@@ -19,6 +19,7 @@ public class GUI extends JFrame {
 	public static Color textColor1 = new Color(200, 210, 220);
 
 	private Preferences prefs;
+	private SearchPanel searchPanel;
 
     public GUI(Preferences prefs, int w, int h) {
 		this.prefs = prefs;
@@ -59,7 +60,9 @@ public class GUI extends JFrame {
 
     public void setSearchPanel() {
         this.getContentPane().removeAll();
-        this.getContentPane().add(new SearchPanel(this, prefs));
+		if(searchPanel == null)
+			searchPanel = new SearchPanel(this, prefs);
+        this.getContentPane().add(searchPanel);
 		revalidate();
 		repaint();
     }

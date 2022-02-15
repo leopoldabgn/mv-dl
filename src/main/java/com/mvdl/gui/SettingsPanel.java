@@ -10,6 +10,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -69,6 +70,7 @@ public class SettingsPanel extends JPanel {
         northPan.setLayout(new BorderLayout());
         northPan.add(backArrow, BorderLayout.WEST);
 
+        this.setBorder(new EmptyBorder(10, 10, 10, 10));
         this.setBackground(GUI.darkColor1);
         this.setLayout(new BorderLayout());
         this.add(centerPan, BorderLayout.CENTER);

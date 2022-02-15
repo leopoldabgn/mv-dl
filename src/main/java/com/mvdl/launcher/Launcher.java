@@ -1,6 +1,5 @@
 package com.mvdl.launcher;
 
-import java.io.File;
 import java.io.IOException;
 
 import com.mvdl.gui.GUI;
