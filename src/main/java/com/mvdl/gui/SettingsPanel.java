@@ -29,10 +29,10 @@ public class SettingsPanel extends JPanel {
         this.prefs = prefs;
 
         String[] audioTab = new String[] {
-            "mp3", "wav", "m4a", "webm"
+            "mp3", "wav", "m4a"//, "webm"
         };
         String[] videoTab = new String[] {
-            "mp4", "webm"
+            "mp4"//, "webm"
         };
 
         audioFormats = new HashMap<String, JRadioButton>();

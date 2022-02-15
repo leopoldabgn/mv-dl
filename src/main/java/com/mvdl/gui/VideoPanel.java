@@ -109,6 +109,7 @@ public class VideoPanel extends JPanel {
 
         private DownloadPanel() {
             setOpaque(false);
+            final ProgressBar progressBar = new ProgressBar();
             this.dlMusic = new JButton("Download music"); // new IconPanel("download_icon", 32);
             dlMusic.addMouseListener( new MouseAdapter() {
                     public void mousePressed(MouseEvent e) {
@@ -117,7 +118,7 @@ public class VideoPanel extends JPanel {
                             @Override
                             public void run() {
                                 Command.downloadsInProgress++;
-                                command.downloadMusic(video);
+                                command.downloadMusic(video, progressBar);
                                 dlMusic.setEnabled(true);
                                 Command.downloadsInProgress--;
                             }
@@ -131,9 +132,13 @@ public class VideoPanel extends JPanel {
                 new QualityFrame();
             });
 
-            setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));    
+            JPanel pan = new JPanel();
+            pan.setOpaque(false);
+            pan.add(progressBar);
+            setLayout(new GridLayout(3, 1));    
             add(dlVideo);
             add(dlMusic);
+            add(pan);
         }
 
         public class QualityFrame extends JFrame {
