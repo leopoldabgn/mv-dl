@@ -32,3 +32,4 @@ music/*.wav
 music/*.m4a
 music/*.webm
 bin/
+releases/
