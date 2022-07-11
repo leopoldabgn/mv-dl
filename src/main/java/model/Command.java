@@ -1,4 +1,4 @@
-package com.mvdl.model;
+package model;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,14 +10,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mvdl.gui.ProgressBar;
-import com.mvdl.gui.ProgressBar.Mode;
-import com.mvdl.model.Video.VideoInfos;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import gui.ProgressBar;
+import gui.ProgressBar.Mode;
+import model.Video.VideoInfos;
 
 public class Command {
 

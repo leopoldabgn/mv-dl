@@ -1,4 +1,4 @@
-package com.mvdl.model;
+package model;
 
 public class Video {
     

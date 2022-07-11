@@ -1,9 +1,9 @@
-package com.mvdl.launcher;
+package launcher;
 
 import java.io.IOException;
 
-import com.mvdl.gui.GUI;
-import com.mvdl.model.Preferences;
+import gui.GUI;
+import model.Preferences;
 
 public class Launcher {
 

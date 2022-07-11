@@ -1,4 +1,4 @@
-package com.mvdl.gui;
+package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -17,9 +17,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileSystemView;
 
-import com.mvdl.model.Command;
-import com.mvdl.model.Preferences;
-import com.mvdl.model.Video;
+import model.Command;
+import model.Preferences;
+import model.Video;
 
 public class SearchPanel extends JPanel {
 

@@ -1,4 +1,4 @@
-package com.mvdl.gui;
+package gui;
 
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
@@ -15,7 +15,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.mvdl.model.Preferences;
+import model.Preferences;
 
 public class SettingsPanel extends JPanel {
 

@@ -1,12 +1,11 @@
-package com.mvdl.gui;
+package gui;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -27,22 +26,22 @@ public class IconPanel extends JPanel {
 		this.setPreferredSize(new Dimension(size, size));
 		setOpaque(false);
 		String name = path;
-		path = convertPath(path);
-		
+		path += ".png";// convertPath(path);
+
 		try {
-			icon = ImageIO.read(new File(path));
+			icon = (BufferedImage)getImage(path);
 		}
-		catch(IOException e) {
+		catch(Exception e) {
 			e.printStackTrace();
 			System.out.println(path);
 		}
 		
 		defaultIcon = icon;
+		path =  "gray_"+name+".png";
 		try {
-			path = convertPath("gray_"+name);
-			grayIcon = ImageIO.read(new File(path));
+			grayIcon = (BufferedImage)getImage(path);
 		}
-		catch(IOException e) {}
+		catch(Exception e) {}
 	}
 	
 	public String convertPath(String path) {
@@ -70,4 +69,10 @@ public class IconPanel extends JPanel {
 			g.drawImage(icon, 0, 0, getWidth(), getHeight(), null);	
 		}
 	}
+
+	public static Image getImage(final String pathAndFileName) throws Exception {
+		final URL url = Thread.currentThread().getContextClassLoader().getResource(pathAndFileName);
+		return ImageIO.read(url);
+	}
+
 }

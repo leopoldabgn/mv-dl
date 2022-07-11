@@ -1,2 +1,2 @@
 #!/bin/bash
-java -cp mv-dl.jar com.mvdl.launcher.Launcher
+java -jar mv-dl.jar

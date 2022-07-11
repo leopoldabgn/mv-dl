@@ -1,4 +1,4 @@
-package com.mvdl.gui;
+package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -24,10 +24,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import com.mvdl.model.Command;
-import com.mvdl.model.Preferences;
-import com.mvdl.model.Video;
-import com.mvdl.model.Video.VideoInfos;
+import model.Command;
+import model.Preferences;
+import model.Video;
+import model.Video.VideoInfos;
 
 public class VideoPanel extends JPanel {
 

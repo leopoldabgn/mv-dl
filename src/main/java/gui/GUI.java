@@ -1,4 +1,4 @@
-package com.mvdl.gui;
+package gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,8 +9,8 @@ import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import com.mvdl.model.Command;
-import com.mvdl.model.Preferences;
+import model.Command;
+import model.Preferences;
 
 public class GUI extends JFrame {
     
