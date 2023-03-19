@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -56,6 +58,28 @@ public class GUI extends JFrame {
             }
         });
 
+		this.addKeyListener(new KeyAdapter() {
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				super.keyPressed(e);
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					searchPanel.setSearchButtonEnabled(false);
+					searchPanel.startSearch();
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				super.keyPressed(e);
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					searchPanel.setSearchButtonEnabled(true);
+				}
+			}
+
+		});
+
+		this.requestFocus();
 		this.setVisible(true);
 	}
 

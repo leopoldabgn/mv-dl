@@ -100,13 +100,7 @@ public class SearchPanel extends JPanel {
                     // List<Video> videos = Command.getVideos(HTMLresult);
                     ///////////////////////////////
                     searchButton.setEnabled(false);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            List<Video> videos = Command.getVideosByJSON(Command.cutHTML(Command.getYtbHTMLCode(searchField.getText())));
-                            listPan.refresh(videos);
-                        }
-                    }).start();
+                    startSearch();
                 }
 
                 public void mouseReleased(MouseEvent e) {
@@ -120,6 +114,16 @@ public class SearchPanel extends JPanel {
             this.setLayout(new BorderLayout());
             this.add(searchField, BorderLayout.CENTER);
             this.add(searchButton, BorderLayout.EAST);
+        }
+
+        public void startSearch() {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    List<Video> videos = Command.getVideosByJSON(Command.cutHTML(Command.getYtbHTMLCode(searchField.getText())));
+                    listPan.refresh(videos);
+                }
+            }).start();
         }
     
     }
@@ -203,6 +207,14 @@ public class SearchPanel extends JPanel {
             actualFolder.setText(prefs.getDownloadFolder().getAbsolutePath());
         }
 
+    }
+
+    public void setSearchButtonEnabled(boolean enabled) {
+        searchBar.searchButton.setEnabled(enabled);
+    }
+
+    public void startSearch() {
+        searchBar.startSearch();
     }
 
 }
