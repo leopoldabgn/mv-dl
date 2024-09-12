@@ -121,7 +121,7 @@ public class VideoPanel extends JPanel {
                             @Override
                             public void run() {
                                 Command.downloadsInProgress++;
-                                command.downloadMusic(video, progressBar);
+                                System.out.println(command.downloadMusic(video, progressBar));
                                 dlMusic.setEnabled(true);
                                 Command.downloadsInProgress--;
                             }
@@ -213,8 +213,8 @@ public class VideoPanel extends JPanel {
                         @Override
                         public void run() {
                             Command.downloadsInProgress++;
-                            command.downloadVideo(video, selectedQuality.getInfos(),
-                                                  progressBar);
+                            System.out.println(command.downloadVideo(video, selectedQuality.getInfos(),
+                                                  progressBar));
                             dlVideo.setEnabled(true);
                             Command.downloadsInProgress--;
                         }
