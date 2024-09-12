@@ -1,2 +1,2 @@
 #!/bin/bash
-java -jar mv-dl.jar
+java -jar mv-dl.jar "$@"

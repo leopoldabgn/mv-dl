@@ -19,9 +19,12 @@ public class SoftwaresUpdates {
         }
 
         // Télécharger le fichier ffmpeg via wget
-        String[] downloadCommand = {"wget", binaryUrl, "-O", binaryPath};
-        System.out.println("Getting latest ffmpeg binary...\n\n" + String.join(" ", downloadCommand) + "\n");
-        runCommandWithLiveOutput(downloadCommand);
+        //String[] downloadCommand = {"wget", binaryUrl, "-O", binaryPath};
+        // System.out.println("Getting latest ffmpeg binary...\n\n" + String.join(" ", downloadCommand) + "\n");
+        // runCommandWithLiveOutput(downloadCommand);
+
+        System.out.println("Getting latest ffmpeg binary...\n\nURL: " + binaryUrl +"\nLocation: " + binaryPath + "\n");
+        Wget.downloadFile(binaryUrl, binaryPath);
 
         if(!Command.isWindows()) {
             // Ajouter les droits d'exécution
@@ -48,9 +51,12 @@ public class SoftwaresUpdates {
         }
 
         // Télécharger le fichier yt-dlp via wget
-        String[] downloadCommand = {"wget", binaryUrl, "-O", binaryPath};
-        System.out.println("Getting latest yt-dlp binary...\n\n" + String.join(" ", downloadCommand) + "\n");
-        runCommandWithLiveOutput(downloadCommand);
+        // String[] downloadCommand = {"wget", binaryUrl, "-O", binaryPath};
+        // System.out.println("Getting latest yt-dlp binary...\n\n" + String.join(" ", downloadCommand) + "\n");
+        // runCommandWithLiveOutput(downloadCommand);
+
+        System.out.println("Getting latest yt-dlp binary...\n\nURL: " + binaryUrl +"\nLocation: " + binaryPath + "\n");
+        Wget.downloadFile(binaryUrl, binaryPath);
 
         if(!Command.isWindows()) {
             // Ajouter les droits d'exécution

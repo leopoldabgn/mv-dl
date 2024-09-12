@@ -1,1 +1,2 @@
-java -jar mv-dl.jar
+@echo off
+java -jar mv-dl.jar %*
