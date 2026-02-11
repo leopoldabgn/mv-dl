@@ -35,19 +35,26 @@ Pour la vidéo, vous pouvez cliquer sur l'icone en forme de caméra situé à dr
 
 # Lancement
 
-Vous pouvez executer le fichier bash suivant :
+Ajouter les droits d'execution sur mv-dl :
 
-(chmod u+x ./mv-dl) -> Si besoin. Normalement inutile.
+> chmod u+x ./mv-dl
 
-Puis :
+Puis executer le binaire :
 
-./mv-dl
+> ./mv-dl
 
 Si ça ne fonctionne pas, vous pouvez lancer directement le jar vous même :
 
-java -cp mv-dl.jar com.mvdl.launcher.Launcher 
+> java -cp mv-dl.jar com.mvdl.launcher.Launcher 
 
 
 Bon téléchargement ;)
 
 L. A.
+
+# Preview
+
+![alt text](image.png)
+![alt text](image-1.png)
+![alt text](image-2.png)
+![alt text](image-3.png)
